@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz B787</title>
+<style>
+body{font-family:Arial,sans-serif;background:#eef3f8;margin:0;padding:20px;text-align:center}
+main{max-width:650px;margin:40px auto;background:white;padding:25px;border-radius:16px;box-shadow:0 4px 15px #0002}
+button{background:#1266b1;color:white;border:0;border-radius:9px;padding:14px 22px;margin:8px;font-size:17px;cursor:pointer}
+button:disabled{background:#aaa}
+.opcion{display:block;width:100%;background:#e8eef5;color:#152d45;text-align:left}
+.correcta{background:#a5e5b4}.incorrecta{background:#f4b2b2}
+#quiz{display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>✈️ Quiz B787</h1>
+<div id="inicio">
+<p>Cuestionario de entrenamiento Boeing 787</p>
+<button onclick="comenzar()">Comenzar</button>
+</div>
+<div id="quiz">
+<p id="progreso"></p>
+<h2 id="pregunta"></h2>
+<div id="opciones"></div>
+<p id="resultado"></p>
+<button id="siguiente" onclick="avanzar()" disabled>Siguiente</button>
+</div>
+</main>
+<script>
+const preguntas=[
+{q:"¿Qué avión estás estudiando?",o:["Boeing 737","Boeing 787","Airbus A320","Boeing 747"],c:1},
+{q:"¿Cuál es el fabricante del B787?",o:["Airbus","Embraer","Boeing","ATR"],c:2}
+];
+let actual=0,aciertos=0;
+function comenzar(){
+actual=0;aciertos=0;
+document.getElementById("inicio").style.display="none";
+document.getElementById("quiz").style.display="block";
+mostrar();
+}
+function mostrar(){
+const p=preguntas[actual];
+document.getElementById("progreso").textContent="Pregunta "+(actual+1)+" de "+preguntas.length;
+document.getElementById("pregunta").textContent=p.q;
+document.getElementById("resultado").textContent="";
+document.getElementById("siguiente").disabled=true;
+const cont=document.getElementById("opciones");
+cont.innerHTML="";
+p.o.forEach((op,i)=>{
+const b=document.createElement("button");
+b.className="opcion";b.textContent=String.fromCharCode(65+i)+". "+op;
+b.onclick=()=>responder(i);
+cont.appendChild(b);
+});
+}
+function responder(i){
+const p=preguntas[actual];
+const botones=document.querySelectorAll(".opcion");
+botones.forEach((b,j)=>{
+b.disabled=true;
+if(j===p.c)b.classList.add("correcta");
+else if(j===i)b.classList.add("incorrecta");
+});
+if(i===p.c)aciertos++;
+document.getElementById("resultado").textContent=i===p.c?"¡Correcto!":"Respuesta incorrecta";
+document.getElementById("siguiente").disabled=false;
+}
+function avanzar(){
+actual++;
+if(actual<preguntas.length){mostrar();return;}
+document.getElementById("quiz").innerHTML="<h2>Cuestionario terminado</h2><p>Aciertos: "+aciertos+" de "+preguntas.length+"</p><button onclick='location.reload()'>Reiniciar</button>";
+}
+</script>
+</body>
+</html>
